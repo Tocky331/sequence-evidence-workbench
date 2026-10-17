@@ -31,10 +31,23 @@
 ## 3. Quick Start
 
 ### 3.1 Prerequisites
-- **Node.js 22.0 or newer** (uses the built-in `node:sqlite` module; no external database configuration required).
+- **Node.js 22.5 or newer** — official download: <https://nodejs.org/en/download> (npm is bundled with Node.js automatically). Uses the built-in `node:sqlite` module.
 - The lightweight pure-JavaScript dependency (`node_modules/csv-parse`) is bundled in this repository, so the app can start **immediately after download without running `npm install` online**.
 
-### 3.2 One-Click Launch
+### 3.2 Optional Command-Line Tool Downloads
+
+These tools are **optional** — install only the ones you need for the corresponding analysis steps (QC, adapter trimming, tRNA scanning, or BLAST alignment). The project does not bundle them.
+
+| Tool | Official download | Notes |
+| --- | --- | --- |
+| **FastQC** | <https://www.bioinformatics.babraham.ac.uk/projects/fastqc/> | Requires a Java runtime |
+| **Cutadapt** | <https://cutadapt.readthedocs.io/en/latest/installation.html> | Windows recommended: `conda install -c bioconda cutadapt` |
+| **tRNAscan-SE** | <https://lowelab.ucsc.edu/tRNAscan-SE/> | Windows recommended: `conda install -c bioconda trnascan-se`; alternatively import its `.out` results instead of running it locally |
+| **BLAST+** | <https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/> | Official Windows installer (`.exe`) available |
+
+> **Windows users**: the easiest way to install Cutadapt / tRNAscan-SE / BLAST+ is the package manager **conda** (miniforge: <https://github.com/conda-forge/miniforge>): `conda install -c bioconda cutadapt trnascan-se blast`.
+
+### 3.3 One-Click Launch
 - **macOS users**:
   - Double-click **`Launch-Workbench.command`** or **`Sequence-Evidence-Workbench.app`** in the folder. The script auto-detects a free port (default `http://localhost:8817/`) and opens your browser.
   - **Note (macOS first-download security prompt)**: If you downloaded the `.zip` from a browser, macOS Gatekeeper may block the unsigned scripts. Open "Terminal", type `cd `, drag this folder into the terminal, press Enter, and run the following one-line command to permanently allow:
