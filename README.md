@@ -1,5 +1,7 @@
 # Sequence Evidence Workbench
 
+<p align="center"><img src="public/logo.svg" width="96" height="96" alt="Sequence Evidence Workbench logo"></p>
+
 > **Project Summary (<350 chars):**
 > Local bioinformatics pipeline for profiling bacterial OMV tsRNAs and host target genes. Maps tRNA loci, classifies tsRNA subtypes, and integrates custom host transcriptomes via a one-click GUI. Exports CSVs, customizable dual-color SVGs, and Word (.docx) reports with 100% concordance against published *PLoS Pathogens* benchmarks.
 
