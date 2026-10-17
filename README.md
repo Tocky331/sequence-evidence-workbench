@@ -36,13 +36,13 @@
 
 ### 3.2 One-Click Launch
 - **macOS users**:
-  - Double-click **`双击打开序证工作台.command`** or **`序证工作台.app`** in the folder. The script auto-detects a free port (default `http://localhost:8817/`) and opens your browser.
+  - Double-click **`Launch-Workbench.command`** or **`Sequence-Evidence-Workbench.app`** in the folder. The script auto-detects a free port (default `http://localhost:8817/`) and opens your browser.
   - **Note (macOS first-download security prompt)**: If you downloaded the `.zip` from a browser, macOS Gatekeeper may block the unsigned scripts. Open "Terminal", type `cd `, drag this folder into the terminal, press Enter, and run the following one-line command to permanently allow:
     ```bash
-    xattr -cr . && chmod +x 双击打开序证工作台.command 序证工作台.app/Contents/MacOS/launcher
+    xattr -cr . && chmod +x Launch-Workbench.command Sequence-Evidence-Workbench.app/Contents/MacOS/launcher
     ```
 - **Windows users**:
-  - Double-click **`双击打开序证工作台_Windows.bat`** in the folder to launch and automatically open the default browser.
+  - Double-click **`Launch-Workbench.bat`** in the folder to launch and automatically open the default browser.
 - **Command-line launch (macOS / Windows / Linux)**:
   ```bash
   npm start
@@ -56,9 +56,9 @@
 ├── README.md                            # Bilingual project README
 ├── 中文用户手册.docx                    # Full Chinese installation & usage manual (Word)
 ├── User-Manual.docx                     # Full English installation & usage manual (Word)
-├── 双击打开序证工作台.command           # macOS one-click launcher script
-├── 序证工作台.app                       # macOS application bundle
-├── 双击打开序证工作台_Windows.bat       # Windows one-click launcher script
+├── Launch-Workbench.command           # macOS one-click launcher script
+├── Sequence-Evidence-Workbench.app                       # macOS application bundle
+├── Launch-Workbench.bat       # Windows one-click launcher script
 ├── server.mjs                           # Local HTTP server & streaming progress API
 ├── lib.mjs                              # Core bioinformatics algorithm engine
 ├── figure.mjs                           # Dual-color publication SVG figure generator

@@ -488,7 +488,7 @@ const pageHelp = {
 const runtimeHelp = {
   intro: '本软件可在任何安装有 Node.js (≥22) 的 macOS、Linux 或 Windows 电脑上本机独立高速运行，并内置一键启动程序。',
   steps: [
-    'macOS 用户可直接双击文件夹中的“序证工作台.app”（带专属双链 Logo 图标）或“双击打开序证工作台.command”；Windows 用户可直接双击“双击打开序证工作台_Windows.bat”，首次运行会自动安装依赖并打开浏览器。',
+    'macOS 用户可直接双击文件夹中的“Sequence-Evidence-Workbench.app”（带专属双链 Logo 图标）或“Launch-Workbench.command”；Windows 用户可直接双击“Launch-Workbench.bat”，首次运行会自动安装依赖并打开浏览器。',
     '所有计算步骤均内置多核并行加速、k-mer 哈希索引与 SHA-256 结果缓存，并在页面上方提供实时流式进度条与阶段性发现反馈。',
     '支持自由添加任意数量的宿主细胞系并自定义细胞名称；所有导出的 CSV、SVG 与 Word (.docx) 分析报告均统一命名为“跑的哪一步-名称-结果时间”。',
     '完整使用说明与 GitHub 上传教程已生成为 Word 文档：《用户程序下载安装配置与使用说明书（中英双语版）.docx》。'

@@ -7,9 +7,9 @@
   <key>CFBundleIdentifier</key>
   <string>org.seqworkbench.opensource</string>
   <key>CFBundleName</key>
-  <string>序证工作台</string>
+  <string>Sequence Evidence Workbench</string>
   <key>CFBundleDisplayName</key>
-  <string>序证工作台</string>
+  <string>Sequence Evidence Workbench</string>
   <key>CFBundlePackageType</key>
   <string>APPL</string>
   <key>CFBundleShortVersionString</key>
