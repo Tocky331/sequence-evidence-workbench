@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">序证工作台标志</title>
+  <rect width="64" height="64" rx="12" fill="#124a88"/>
+  <path d="M15 16v32M49 16v32" stroke="#8bd6d1" stroke-width="3" stroke-linecap="round"/>
+  <path d="M16 17c13 0 18 30 32 30M16 47c13 0 18-30 32-30" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+  <path d="M23 24h18M27 32h10M23 40h18" stroke="#8bd6d1" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

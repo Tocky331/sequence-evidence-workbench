@@ -1,0 +1,4 @@
+Sequence tRNA Bounds tRNA Anti Intron Bounds Cove
+Name tRNA # Begin End Type Codon Begin End Score
+-------- -------- ----- ---- ---- ----- ----- ----- -----
+example_contig 1 4 32 Lys TTT 0 0 55.0

@@ -1,0 +1,4 @@
+gene_id	log2FoldChange	padj
+ENSG000001	-1.5	0.02
+ENSG000002	-0.1	0.7
+ENSG000003	1.2	0.04

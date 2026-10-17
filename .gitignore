@@ -1,0 +1,16 @@
+# Runtime dependencies & local environments
+node_modules/
+.tools/
+
+# Local user data, SQLite databases & caches (never commit private sequencing data)
+data/
+cache/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# OS & Editor files
+.DS_Store
+.Rhistory
+*.log
+.playwright-cli/

@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>序证工作台｜Microbial OMV tsRNA &amp; Host Transcriptome Workbench</title><link rel="icon" href="/logo.svg" type="image/svg+xml"><link rel="stylesheet" href="/style.css?v=20261017v1"></head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><img class="brand-logo" src="/logo.svg" alt="序证工作台标志"><div class="brand-text"><strong>序证工作台</strong><small>OMV tsRNA &amp; Host Evidence</small></div></div>
+    <nav aria-label="主导航">
+      <button class="nav active" data-step="01" data-view="overview">工作台概览</button>
+      <button class="nav" data-step="02" data-view="imports">数据导入与质控</button>
+      <button class="nav" data-step="03" data-view="trna">基因组 tRNA 扫描</button>
+      <button class="nav" data-step="04" data-view="tsrna">OMV tsRNA 筛选</button>
+      <button class="nav" data-step="05" data-view="cells">宿主细胞转录组</button>
+      <button class="nav" data-step="06" data-view="priority">候选 tsRNA 整合</button>
+      <button class="nav" data-step="07" data-view="match">序列比对工具</button>
+      <button class="nav" data-step="08" data-view="results">结果与图表导出</button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-author-row"><div class="sidebar-author">@Tocky</div><button id="runtime-help" class="sidebar-guide" type="button" aria-label="下载与运行说明" title="下载与运行说明" aria-haspopup="dialog"></button></div>
+      <div class="sidebar-bottom"><span class="status-dot"></span> 本地多核高速生信引擎<br><span class="muted">支持任意细菌 · 自由添加与命名宿主细胞</span></div>
+    </div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div class="page-heading"><div class="page-title-row"><h1 id="page-title">工作台概览</h1><button id="page-help" class="page-help" type="button" aria-label="概览使用说明" title="概览使用说明" aria-haspopup="dialog"></button></div><p id="page-subtitle">细菌基因组 tRNA 扫描 · OMV small RNA 富集筛选 · 多宿主细胞系转录组与候选 tsRNA 锁定</p></div><div class="top-actions"><span id="tool-status" class="tool-status">检测工具中…</span><button id="language-toggle" class="language-toggle" type="button" aria-label="切换到 English" title="切换到 English">EN</button></div></header>
+    <div id="alert" class="alert" role="status" hidden></div>
+    <div id="live-progress" class="live-progress" role="region" aria-live="polite" hidden>
+      <div class="live-progress-head">
+        <div class="live-progress-title"><span class="live-spinner"></span><span id="live-stage-text">正在初始化生信分析流水线…</span></div>
+        <span id="live-meta-text" class="live-progress-meta">0% · 0.0s</span>
+      </div>
+      <div class="live-bar-track"><div id="live-bar-fill" class="live-bar-fill"></div></div>
+      <ul id="live-log-list" class="live-log-list"></ul>
+    </div>
+
+    <section id="overview" class="view active">
+      <div class="overview-intro">
+        <div>
+          <h2>从细菌基因组到跨界调控候选 tsRNA 的完整证据链</h2>
+          <p>覆盖“步骤 1：细菌基因组 tRNA 扫描与多菌株保守性分析 → 步骤 2：OMV small RNA 高速 k-mer 精确匹配、3′-CCA 识别与富集度计算 → 步骤 3：自由添加与命名任意数量宿主细胞系（1 至 N 个细胞系）进行转录组差异分析与跨界靶基因联合筛选”。执行过程中提供实时阶段进度与动态发现反馈。</p>
+        </div>
+        <div class="overview-actions">
+          <button id="open-imports" class="primary">导入实验数据</button>
+        </div>
+      </div>
+
+      <div class="section-head"><h2>当前项目资产</h2><span id="dataset-count" class="section-meta"></span></div>
+      <div id="assembly-summary" class="assembly-summary"></div>
+
+      <div class="section-head evidence-head"><h2>四阶段生信证据流水线状态</h2><span class="section-meta">点击任一阶段可直接跳转对应工作台页面</span></div>
+      <div id="evidence-status" class="evidence-status" aria-live="polite"></div>
+      <p class="evidence-limit">科学严谨性边界：基因组 tRNA 定位属于计算预测；OMV 包装表达和宿主转录组响应须分别由对应测序数据支持，最终候选 tsRNA 调控机制需经独立分子实验验证。</p>
+
+    </section>
+
+    <section id="imports" class="view">
+      <div class="section-head"><h2>导入实验与参考文件</h2><span class="section-meta">支持任意细菌基因组、OMV sRNA 及自由定义任意数量与名称的宿主细胞系</span></div>
+      <div class="import-context">
+        <label>OMV 来源菌株<select id="reads-strain"></select></label>
+        <label>OMV small RNA 文件状态<select id="reads-processing"><option value="processed">已完成接头去除、质量控制及污染过滤（可进入候选整合）</option><option value="unverified">原始或预处理状态未核实（仅作探索性比对）</option></select></label>
+      </div>
+      <div class="upload-grid">
+        <label class="upload"><strong>1. 细菌基因组组装</strong><span>.fa / .fasta / .fna（支持任意革兰氏阴性/阳性细菌）</span><em>导入</em><input type="file" data-kind="assembly" accept=".fa,.fasta,.fna"></label>
+        <label class="upload"><strong>2. OMV small RNA 测序/计数</strong><span>FASTQ(.gz) / FASTA / CSV(含全菌对照或log2列)</span><em>导入</em><input type="file" data-kind="reads" accept=".fastq,.fq,.fastq.gz,.fq.gz,.fasta,.fa,.csv,.tsv,.gz"></label>
+        <label class="upload"><strong>4. 跨界靶基因预测表（可选）</strong><span>CSV / TSV · sequence, gene_id, method</span><em>导入</em><input type="file" data-kind="targets" accept=".csv,.tsv,.txt"></label>
+        <label class="upload"><strong>5. 外部 tRNAscan-SE 结果（可选）</strong><span>文本输出 .out / .txt</span><em>导入</em><input type="file" data-kind="trna" accept=".out,.txt"></label>
+        <label class="upload"><strong>6. 本地参考序列库（可选）</strong><span>用于 BLAST+ 或精确检索的 FASTA</span><em>导入</em><input type="file" data-kind="reference" accept=".fa,.fasta,.fna"></label>
+      </div>
+
+      <div class="cell-builder-box">
+        <div class="cell-builder-head">
+          <div>
+            <h3>3. 宿主细胞差异表达表导入（按需自由增减细胞个数与自定义名称）</h3>
+            <span class="section-meta">不预设固定细胞系；请根据实验设计自由设定宿主细胞个数（1 至 N 个），自定义每个细胞系名称并上传 CSV/TSV 差异表达表</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <label style="display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:#344e66;margin:0">对应菌株：<select id="de-strain" style="width:190px;height:34px;min-height:34px"></select></label>
+            <div style="display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #cbd5e1;border-radius:7px;padding:3px 8px">
+              <span style="font-size:12px;font-weight:600;color:#1e293b">细胞个数：</span>
+              <button id="dec-import-cell-slot" class="secondary" type="button" style="min-height:26px;padding:0 8px;font-size:13px;font-weight:700" title="减少 1 个宿主细胞系">－</button>
+              <input id="import-cell-count" type="number" min="1" max="20" value="1" style="width:52px;min-height:26px;height:26px;padding:2px 6px;text-align:center;font-weight:700">
+              <button id="add-import-cell-slot" class="secondary" type="button" style="min-height:26px;padding:0 10px;font-size:12px;font-weight:600" title="增加 1 个宿主细胞系">＋ 添加细胞系</button>
+            </div>
+          </div>
+        </div>
+        <div id="import-cell-slots" class="cell-slots-list"></div>
+      </div>
+
+      <div class="section-head data-head"><h2>FASTQ 质控与 3′ 接头多核剪切</h2><span class="section-meta">FastQC 0.13.0 · Cutadapt 5.2 多线程并行</span></div>
+      <div class="form-row">
+        <label>small RNA FASTQ<select id="qc-reads"></select></label>
+        <button id="run-fastqc" class="secondary" type="button">运行 FastQC</button>
+        <label>常用建库 3′ 接头预设<select id="adapter-preset"><option value="">手动输入或选择常用试剂盒接头…</option><option value="TGGAATTCTCGGGTGCCAAGG">Illumina TruSeq Small RNA (TGGAATTCTCGGGTGCCAAGG)</option><option value="AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC">Illumina Universal / NEBNext (AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC)</option><option value="AACTGTAGGCACCATCAAT">QIAseq miRNA 3′ Adapter (AACTGTAGGCACCATCAAT)</option></select></label>
+        <label>3′ 接头序列<input id="adapter-sequence" type="text" placeholder="输入建库试剂盒真实 3′ 接头序列" autocomplete="off"></label>
+        <button id="run-cutadapt" class="primary" type="button">运行 Cutadapt</button>
+      </div>
+      <p class="note">提示：选择预设会自动填入标准 3′ 接头序列；Cutadapt 多核并行剪切后保留 ≥10 nt 序列（覆盖 13 nt <code>Ile-tRF-5X</code> 等超短 tRF），并自动登记为已去接头样本。</p>
+      <div id="qc-output" class="output"></div>
+
+      <div class="section-head data-head"><h2>已导入文件清单</h2><span class="section-meta">未被下游分析引用的文件可直接删除</span></div>
+      <div class="table-wrap"><table><thead><tr><th>文件名 / ID</th><th>类型</th><th>统计摘要</th><th>导入日期与时间</th><th>操作</th></tr></thead><tbody id="uploads-table"></tbody></table></div>
+    </section>
+
+    <section id="trna" class="view">
+      <div class="section-head"><h2>步骤 1：细菌基因组 tRNA 基因扫描与理论 tsRNA 建库</h2><span class="section-meta">tRNAscan-SE 2.0 细菌模式 (-B) 多核并行 · 1-based 坐标</span></div>
+      <div class="form-row">
+        <label>选择细菌基因组组装<select id="trna-assembly"></select></label>
+        <label>tRNA 预测方式<select id="trna-annotation"><option value="">直接调用本机 tRNAscan-SE (-B 细菌模式)</option></select></label>
+        <button id="run-trna" class="primary" type="button">运行 tRNA 扫描</button>
+      </div>
+      <p class="note">自动识别细菌基因组全部 tRNA 位点、反密码子、正负链方向，并构建 10–50 nt 理论 tsRNA 候选空间（5′-tRF、3′-tRF、5′/3′-tiRNA、i-tRF），支持 SHA-256 签名高速缓存。</p>
+      <div id="trna-output" class="output"></div>
+
+      <div class="section-head data-head"><h2>多菌株基因组 tRNA 与候选 tsRNA 保守性横向对比</h2><span class="section-meta">适用于多株同种或跨种细菌基因组横向比较</span></div>
+      <div class="form-row">
+        <div class="form-info">对比当前已完成的全部菌株 tRNA 定位结果，自动筛出<strong>所有菌株 100% 共有的核心保守 tRNA/tsRNA</strong>、<strong>菌株特异性 tRNA</strong>，并自动比对文献已证实的功能性 OMV tsRNA 同源序列（如 <code>Ile-tRF-5X</code> 与 <code>sRNA52320</code>）。</div>
+        <button id="run-compare-strains" class="primary" type="button">运行多菌株保守性对比</button>
+      </div>
+      <div id="strains-output" class="output"></div>
+    </section>
+
+    <section id="tsrna" class="view">
+      <div class="section-head"><h2>步骤 2：OMV small RNA 测序匹配、tsRNA 亚型分类与富集度分析</h2><span class="section-meta">高速 k-mer 哈希索引 · 支持成熟 tRNA 3′-CCA 尾匹配 · 自动计算 RPM 与 OMV/全菌 log2 富集比</span></div>
+      <div class="form-row">
+        <label>菌株 tRNA 定位结果<select id="tsrna-trna"></select></label>
+        <label>同菌株 OMV small RNA 样本<select id="tsrna-reads"></select></label>
+        <label class="narrow">最短 nt<input id="min-length" type="number" min="10" max="100" value="10"></label>
+        <label class="narrow">最长 nt<input id="max-length" type="number" min="10" max="100" value="50"></label>
+        <label class="narrow">3′-CCA 匹配<select id="allow-cca"><option value="true">开启</option><option value="false">仅基因组</option></select></label>
+        <button id="run-tsrna" class="primary" type="button">筛选 OMV tsRNA</button>
+      </div>
+      <p class="note">自动将 OMV 序列精细分类为 <code>5′-tRF (tRF-5X/5a/5b/5c)</code>、<code>5′-tiRNA</code>、<code>3′-tRF (含 CCA 成熟末端)</code>、<code>3′-tiRNA</code> 与 <code>i-tRF</code>，按需惰性计算二级结构茎环自由能（ΔG），并输出按 tRNA 基因位点汇总的 OMV 丰度排行表。</p>
+      <div id="tsrna-output" class="output"></div>
+    </section>
+
+    <section id="cells" class="view">
+      <div class="section-head"><h2>步骤 3A：转染后宿主细胞系转录组差异表达分析</h2><span class="section-meta">支持自由增减参与对比的宿主细胞个数（1 至 N 个细胞系）并自定义名称</span></div>
+      <div class="cell-builder-box" style="margin-top:0;margin-bottom:14px">
+        <div class="cell-builder-head">
+          <div>
+            <h3>配置参与对比的宿主细胞系（可自由添加或删减细胞个数）</h3>
+            <span class="section-meta">支持单细胞系独立筛选、双细胞系四象限对比，或 3 个及以上宿主细胞系联合同向/特异调控分析</span>
+          </div>
+          <div style="display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #cbd5e1;border-radius:7px;padding:3px 8px">
+            <span style="font-size:12px;font-weight:600;color:#1e293b">对比细胞个数：</span>
+            <button id="dec-compare-cell-slot" class="secondary" type="button" style="min-height:26px;padding:0 8px;font-size:13px;font-weight:700" title="减少 1 个对比细胞系">－</button>
+            <input id="compare-cell-count" type="number" min="1" max="20" value="1" style="width:52px;min-height:26px;height:26px;padding:2px 6px;text-align:center;font-weight:700">
+            <button id="add-compare-cell-slot" class="secondary" type="button" style="min-height:26px;padding:0 10px;font-size:12px;font-weight:600" title="增加 1 个对比细胞系">＋ 添加对比细胞系</button>
+          </div>
+        </div>
+        <div id="compare-cell-slots" class="cell-slots-list"></div>
+      </div>
+      <div class="form-row">
+        <label>所属细菌菌株<select id="cells-strain"></select></label>
+        <label class="narrow">FDR ≤<input id="cells-fdr" type="number" min="0.0001" max="1" step="0.01" value="0.05"></label>
+        <label class="narrow">|log2FC| ≥<input id="cells-lfc" type="number" min="0" max="20" step="0.1" value="1"></label>
+        <button id="run-cells" class="primary" type="button">比较宿主细胞转录组</button>
+      </div>
+      <p class="note">支持比较任意数量与任意命名的同菌株处理宿主细胞转录组/蛋白组差异表，自动识别在各细胞系中<strong>共同显著下调</strong>或<strong>共同显著上调</strong>的宿主响应基因。</p>
+      <div id="cells-output" class="output"></div>
+    </section>
+
+    <section id="priority" class="view">
+      <div class="section-head"><h2>步骤 3B：跨界靶基因预测与候选功能性 tsRNA 证据链整合</h2><span class="section-meta">OMV 富集 tsRNA × 二级结构稳定性 × 跨界靶基因预测 × 宿主细胞转录组响应</span></div>
+      <div class="form-row">
+        <label>OMV tsRNA 筛选结果<select id="priority-tsrna"></select></label>
+        <label>同菌株宿主细胞转录组比较<select id="priority-cells"></select></label>
+        <label>跨界靶基因来源<select id="priority-targets"></select></label>
+        <label>调控机制筛选模式<select id="priority-mode"><option value="both">双向综合（下调抑制 + 上调促进）</option><option value="down">经典类 miRNA 靶基因下调（如 sRNA52320 → MAP3K7/MAP2K4）</option><option value="up">miRNA 海绵竞争靶基因上调（如 Ile-tRF-5X → MAP3K4）</option></select></label>
+        <button id="run-priority" class="primary" type="button">锁定候选 tsRNA</button>
+      </div>
+      <p class="note">若尚未导入外部 miRanda / RNAhybrid 预测表，可直接选择<strong>“内置跨界种子区/反义互补预测引擎”</strong>自动扫描人类 MAPK / 先天免疫 / 细胞增殖核心通路靶点，并结合自定义的 1 至 N 个宿主细胞系差异表达数据输出最终候选 tsRNA 排名。</p>
+      <div id="priority-output" class="output"></div>
+    </section>
+
+    <section id="match" class="view">
+      <div class="section-head"><h2>本地参考序列匹配工具</h2><span class="section-meta">支持双链 100% 精确匹配与本地多核 BLAST+ (blastn-short / blastn)</span></div>
+      <div class="match-mode" role="group" aria-label="匹配方式">
+        <label><input type="radio" name="match-mode" value="exact" checked><span>全长精确匹配</span></label>
+        <label><input type="radio" name="match-mode" value="blast"><span>BLAST+ 局部比对</span></label>
+      </div>
+      <div class="form-row">
+        <label>查询 FASTA 或 tsRNA 结果<select id="match-query"></select></label>
+        <label>参考数据库 FASTA<select id="match-reference"></select></label>
+        <label class="narrow">最短比对 nt<input id="match-min" type="number" min="1" value="10"></label>
+        <button id="run-match" class="primary" type="button">开始序列比对</button>
+      </div>
+      <p id="match-note" class="note">全长精确匹配要求查询序列 100% 覆盖、无错配或缺口；BLAST+ 对 ≤50 nt 短序列自动启用多核 <code>blastn-short</code>。</p>
+      <div id="match-output" class="output"></div>
+    </section>
+
+    <section id="results" class="view">
+      <div class="section-head">
+        <h2>本机分析记录与发表级图表/Word 报告导出</h2>
+        <div class="results-actions"><span class="section-meta">统一按“跑的哪一步-名称-结果时间”命名导出 CSV 全表、可编辑 SVG 矢量图与 Word (.docx) 报告</span><button id="clear-results" class="danger secondary" type="button">清空全部分析记录</button></div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>分析名称（点击查看详情与图表）</th><th>分析类型</th><th>分析日期与时间</th><th class="export-col">一键导出</th><th>删除</th></tr></thead><tbody id="results-table"></tbody></table></div>
+      <div id="result-detail" class="output"></div>
+    </section>
+  </main>
+</div>
+
+<dialog id="help-dialog" class="help-dialog" aria-labelledby="help-title">
+  <div class="help-dialog-head"><div><span class="help-eyebrow">使用说明</span><h2 id="help-title"></h2></div><button id="help-close" class="help-close" type="button" aria-label="关闭使用说明" title="关闭"></button></div>
+  <div class="help-dialog-body"><p id="help-intro"></p><ol id="help-steps"></ol><p id="help-limit" class="help-limit"></p></div>
+</dialog>
+<script type="module" src="/app.js?v=20261017v1"></script>
+</body></html>

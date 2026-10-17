@@ -1,0 +1,16 @@
+{
+  "name": "bacterial-genome-workbench",
+  "version": "2.0.0",
+  "private": false,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "csv-parse": "^7.0.3"
+  }
+}
