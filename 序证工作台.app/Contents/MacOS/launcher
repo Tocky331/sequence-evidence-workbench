@@ -1,0 +1,6 @@
+#!/bin/zsh
+APP_DIR="${0:A:h:h:h:h}"
+CMD_FILE="$APP_DIR/双击打开序证工作台.command"
+chmod +x "$CMD_FILE" 2>/dev/null || true
+/usr/bin/xattr -cr "$APP_DIR" 2>/dev/null || true
+/usr/bin/open -a Terminal "$CMD_FILE"

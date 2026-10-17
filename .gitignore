@@ -1,10 +1,7 @@
-# Runtime dependencies & local environments
-node_modules/
-.tools/
-
 # Local user data, SQLite databases & caches (never commit private sequencing data)
 data/
 cache/
+.tools/
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal
@@ -14,3 +11,4 @@ cache/
 .Rhistory
 *.log
 .playwright-cli/
+~\$*

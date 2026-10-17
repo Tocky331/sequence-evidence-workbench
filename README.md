@@ -1,45 +1,81 @@
-# 序证工作台
+# 序证工作台 | Sequence Evidence Workbench
 
-序证工作台是一个在本机运行的 Web 应用，用于整理细菌基因组、OMV small RNA 和宿主细胞差异表达数据，并开展 tRNA/tsRNA 筛选、跨宿主细胞比较、候选优先级整合及序列匹配。项目面向研究探索；计算预测不能替代测序质控、实验重复和独立功能验证。
+> **English Summary (<350 chars):**  
+> Local bioinformatics workbench for bacterial OMV tsRNA and host target analysis. Maps tRNA loci, classifies tsRNA subtypes, and integrates custom host transcriptomes via a one-click GUI. Exports CSVs, customizable dual-color SVGs, and Word (.docx) reports with 100% concordance against published *PLoS Pathogens* benchmarks.
 
-## 功能
+---
 
-- 导入 FASTA、FASTQ/FASTQ.GZ、CSV/TSV、外部 tRNAscan-SE 输出和本地参考序列。
-- 可选调用本机 FastQC、Cutadapt、tRNAscan-SE 与 BLAST+；没有安装时，使用相应功能会显示工具缺失。
-- 对宿主差异表达表进行单个或多个自定义细胞系比较，并整合候选 tsRNA 证据。
-- 导出 CSV、SVG 图表和 DOCX 分析报告。
-- 页面右上角提供持久化的中文 / English 一键切换，导航、表单、帮助内容和分析结果会随当前语言更新。
-- 数据默认存放于项目目录下的 `data/`；设置 `WORKBENCH_DATA_DIR` 可改用独立位置。
+## 一、 项目简介 | Overview
 
-## 环境要求
+**序证工作台（Sequence Evidence Workbench）** 是一个在本机运行的生物信息学 Web 分析平台，专为**细菌外膜囊泡（OMV）tRNA 衍生小 RNA（tsRNA / tRF / tiRNA）跨界调控宿主靶基因**研究设计。无需复杂的命令行操作，即可在本地完成从细菌基因组 tRNA 注释、多菌株保守性比对、OMV 小 RNA 测序片段富集、多组自定义宿主细胞系差异表达整合，到跨界靶基因预测与可编辑 Word（`.docx`）报告导出的全流程分析。
 
-- Node.js 22 或更新版本（使用内置 SQLite 模块）。
-- npm。
-- 运行可选生信步骤时，另需自行安装相应命令行工具。
+**Sequence Evidence Workbench** is a privacy-preserving, local Web application for bacterial Outer Membrane Vesicle (OMV) tRNA-derived small RNA (tsRNA/tRF) screening and cross-kingdom host target prioritization.
 
-## 启动
+---
 
-macOS 可双击 `双击打开序证工作台.command`。Windows 可双击 `双击打开序证工作台_Windows.bat`。首次运行前确保已安装 Node.js 22+ 并联网安装项目依赖。也可以在项目目录运行：
+## 二、 核心功能 | Key Features
 
-```sh
-npm install
-npm start
+- **五步标准化分析流水线 | 5-Step Standardized Pipeline**
+  1. **基因组与 tRNA 扫描（Genome & tRNA Scan）**：导入细菌基因组 FASTA 与 tRNAscan-SE 结果（或直接调用本机 `tRNAscan-SE`），支持多菌株 tRNA 保守性聚类比对。
+  2. **OMV tsRNA 鉴定与分类（OMV tsRNA Screening）**：支持 FASTQ / FASTQ.GZ / CSV / TSV 测序数据流式记数、3'-CCA 尾端匹配、5'-tRF / 3'-tRF / i-tRF / tiRNA 亚型自动分类及二级结构自由能（MFE）评估。
+  3. **自定义多宿主细胞系比较（Flexible Multi-Cell Host Comparison）**：无固定细胞系限制，支持用户自由添加或删减 **1–20 组任意宿主细胞系**（如 A549、THP-1、HEK293T、Caco-2 等）的差异表达表（DE CSV/TSV），自动识别跨细胞系共同下调/上调靶基因。
+  4. **跨界靶点整合与优先级排序（Cross-Kingdom Target Prioritization）**：内置人源免疫与屏障关键通路 3'UTR 种子区与互补配对扫描，支持导入自定义靶点表或调用本机 `BLAST+` 进行序列比对，构建“OMV 真实表达片段 → 宿主靶基因 → 跨细胞系转录组变化”完整证据链。
+  5. **序列直接匹配（Direct Sequence Matching）**：支持正负双链精确匹配与本机 BLAST 比对。
+- **双色学术级 SVG 图表定制 | Dual-Color Publication SVG Figures**
+  - 采用**“关注基因/序列主色 + 其余背景基因次色”**双色视觉规范，内置 6 套经典学术期刊配色（Nature 经典蓝、Cell 珊瑚红、Science 翡翠绿、Lancet 深紫、JAMA 暖琥珀、高对比学术灰），并支持自由取色器、字体字号调整与一键导出矢量 `.svg`。
+- **原生 Word（`.docx`）报告与 CSV 数据表导出 | Native Word & CSV Export**
+  - 一键生成标准 OpenXML（`.docx`）格式分析报告（含完整实验元数据、方法说明與结果汇总表格），兼容 Microsoft Word、WPS Office 与 Apple Pages。
+- **中英双语实时切换与 6 秒智能通知动效 | Bilingual UI & Smooth Toast Transitions**
+  - 右上角支持 **中文 / English** 一键持久化切换；运行进度条与完成提示支持丝滑入场及完成后 **6 秒自动淡出**。
+
+---
+
+## 三、 快速启动 | Quick Start
+
+### 1. 环境要求 | Prerequisites
+- **Node.js 22.0 或更新版本**（使用 Node.js 内置 `node:sqlite` 模块，无需额外配置数据库）。
+- 本项目已内置轻量级纯 JavaScript 解析依赖（`node_modules/csv-parse`），下载后**无需联网执行 `npm install` 即可直接启动**。
+
+### 2. 一键双击启动 | One-Click Launch
+- **macOS 用户**：
+  - 双击目录内的 **`双击打开序证工作台.command`** 或 **`序证工作台.app`**，脚本会自动检测空闲端口（默认 `http://localhost:8817/`）并打开浏览器。
+  - **注意（macOS 首次下载安全提示）**：如果您是从浏览器直接下载的 `.zip` 压缩包，macOS Gatekeeper 可能会拦截未签名的脚本。请打开“终端（Terminal）”，输入 `cd ` 后将本文件夹拖入终端回车，执行以下一行命令即可永久放行：
+    ```bash
+    xattr -cr . && chmod +x 双击打开序证工作台.command 序证工作台.app/Contents/MacOS/launcher
+    ```
+- **Windows 用户**：
+  - 双击目录内的 **`双击打开序证工作台_Windows.bat`** 即可启动并自动打开默认浏览器。
+- **命令行启动（macOS / Windows / Linux 通用）**：
+  ```bash
+  npm start
+  ```
+
+---
+
+## 四、 目录结构与说明文档 | Repository Structure & Manuals
+
+```text
+├── README.md                            # 项目中英双语说明文档 (Bilingual README)
+├── 中文用户手册.docx                    # 完整中文安装配置与使用手册 (Chinese User Manual in Word)
+├── User-Manual.docx                     # 完整英文安装配置与使用手册 (English User Manual in Word)
+├── 双击打开序证工作台.command           # macOS 一键启动脚本 (macOS One-Click Launcher)
+├── 序证工作台.app                       # macOS 桌面应用程序包 (macOS Application Bundle)
+├── 双击打开序证工作台_Windows.bat       # Windows 一键启动脚本 (Windows One-Click Launcher)
+├── server.mjs                           # 本地 Web 服务与流式进度 API (HTTP Server & Streaming API)
+├── lib.mjs                              # 核心生物信息学算法引擎 (Core Bioinformatics Engine)
+├── figure.mjs                           # 双色学术级 SVG 矢量图表生成器 (Dual-Color SVG Generator)
+├── docx.mjs                             # 标准 OOXML Word (.docx) 报告生成引擎 (DOCX Report Engine)
+├── package.json                         # Node.js 项目配置 (Project Manifest)
+├── public/                              # 前端交互界面 (Bilingual Web UI Assets)
+└── test/                                # 自动化单元测试与标准示例数据 (Unit Tests & Demo Fixtures)
 ```
 
-打开终端显示的本机地址，默认是 `http://localhost:8817/`。停止服务请回到启动终端按 Ctrl+C。
+---
 
-## 测试
+## 五、 自动化测试 | Running Tests
 
-```sh
+```bash
 npm test
 ```
 
-测试包含纯函数和 HTTP 集成检查；集成测试为服务指定系统临时目录，不会修改真实项目数据。
-
-## 数据与隐私
-
-上传文件、分析记录、缓存均保存在本机数据目录。不要将测序数据、数据库、`.tools/` 环境、`node_modules/` 或个人隐私信息提交到公开仓库。`.gitignore` 已排除常见本地数据路径。
-
-## 文档
-
-发布目录包含独立中文与英文用户手册，以及中文 GitHub 上传步骤指南。
+所有上传数据、SQLite 数据库与缓存默认保存在本机 `data/` 目录下（已由 `.gitignore` 自动忽略），确保您的未发表测序数据 100% 留存在本地电脑。
